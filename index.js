@@ -10,10 +10,15 @@ app.use(express.static("public"));
 
 app.use("/auth", Authroutes);
 app.use("/admin", require("./routes/adminAddpermisson"));
+app.use("/category", require("./routes/category"));
+const postRoutes = require("./routes/post");
+app.use("/post", postRoutes);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
   mongoose
-    .connect(`mongodb://localhost:27017/role`)
+    .connect(
+      `mongodb+srv://taufikcitbd:fsl60IRzP7w4r1N8@cluster0.xtxt8.mongodb.net/role`
+    )
     .then(() => console.log("connected"));
 });

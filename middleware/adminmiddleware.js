@@ -1,9 +1,6 @@
 exports.onlyAdmin = async (req, res, next) => {
   try {
     const user = await req.user;
-    console.log("user", user);
-
-    // console.log(user.role !== 1);
 
     if (user.role !== 1) {
       return res

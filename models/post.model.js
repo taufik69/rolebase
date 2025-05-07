@@ -3,7 +3,12 @@ const Schema = mongoose.Schema;
 const postSchema = new Schema({
   title: String,
   description: String,
-  category: {
-    type: Array,
-  },
+  category: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+    },
+  ],
 });
+
+module.exports = mongoose.model("Post", postSchema);

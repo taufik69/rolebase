@@ -6,6 +6,6 @@ const Post = require("../controller/post");
 
 // Create a new post
 router.post("/create", authMiddleware, onlyAdmin, Post.CreatePost);
-router.get("/allpost", authMiddleware, Post.GetAllPost);
+router.get("/allpost", authMiddleware, onlyAdmin, Post.GetAllPost);
 
 module.exports = router;

@@ -45,10 +45,6 @@ exports.CreatePost = async (req, res) => {
 
 exports.GetAllPost = async (req, res) => {
   try {
-    // const posts = await Post.find()
-    //   .populate("category")
-    //   .sort({ createdAt: -1 });
-
     const posts = await Post.aggregate([
       {
         $lookup: {
@@ -58,19 +54,15 @@ exports.GetAllPost = async (req, res) => {
           as: "category",
         },
       },
-      {
-        $unwind: "$category",
-      },
+
       {
         $project: {
           title: 1,
           description: 1,
-          category: "$category.name",
-          categoryId: "$category._id",
+          category: "$category",
         },
       },
     ]);
-    console.log(posts);
 
     if (posts) {
       res.status(200).json({

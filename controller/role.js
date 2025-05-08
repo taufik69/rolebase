@@ -1,4 +1,5 @@
 const role = require("../models/role.mode");
+const redis = require("../config/redis");
 
 exports.CreateRole = async (req, res) => {
   try {
@@ -34,17 +35,16 @@ exports.CreateRole = async (req, res) => {
 // get all role
 exports.getRole = async (req, res) => {
   try {
-    // const roles = await role.aggregate([
-    //   {
-    //     $project: {
-    //       roleName: 1,
-    //       value: 1,
-    //       createdAt: 1,
-    //       updatedAt: 1,
-    //       id: 1,
-    //     },
-    //   },
-    // ]);
+    // Check if roles are cached in Redis
+    const cachedRoles = await redis.get("roles");
+    if (cachedRoles) {
+      return res.status(200).json({
+        message: "All roles",
+        data: JSON.parse(cachedRoles),
+      });
+    }
+    // If not cached, fetch from the database
+
     const roles = await role
       .find({ value: { $ne: 1 } })
       .select("roleName value createdAt updatedAt ");
@@ -53,11 +53,15 @@ exports.getRole = async (req, res) => {
         message: "No roles found",
       });
     }
-    const formatted = roles.map((role) => role.toJSON());
+    // Cache the roles in Redis
+    await redis.set("roles", JSON.stringify(roles), { EX: 36 }); // Ex means 36 seconds
+    const haveTime = await redis.ttl("roles");
+    console.log("Cache time remaining:", haveTime);
+
     if (roles) {
       return res.status(200).json({
         message: "All roles",
-        data: formatted,
+        data: roles,
       });
     }
   } catch (error) {

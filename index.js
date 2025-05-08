@@ -20,5 +20,9 @@ app.listen(3000, () => {
     .connect(
       `mongodb+srv://taufikcitbd:fsl60IRzP7w4r1N8@cluster0.xtxt8.mongodb.net/role`
     )
-    .then(() => console.log("connected"));
+    .then(() => console.log("Database  connected"))
+    .then(() =>
+      // add resis
+      require("./config/redis")
+    );
 });
